@@ -13,6 +13,9 @@
 #define IDPROOF_LEN 30
 #define MAX_ROOMS 100
 
+#define MAX_BOOKINGS 100
+#define MAX_GUESTS   100
+
 #define ROOM_FILE    "rooms.dat"
 #define GUEST_FILE   "guests.dat"
 #define BOOKING_FILE "bookings.dat"
