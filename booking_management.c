@@ -262,7 +262,7 @@ float getRoomPrice(int roomId) {
 
 int isValidDateFormat(const char *date) {
     int d, m, y;
-    if (scanf(date, "%d-%d-%d", &d, &m, &y) != 3) return 0;
+    if (sscanf(date, "%d-%d-%d", &d, &m, &y) != 3) return 0;
     if (d < 1 || d > 31) return 0;
     if (m < 1 || m > 12) return 0;
     if (y < 2000 || y > 2100) return 0;
@@ -310,8 +310,8 @@ int dateToDayNumber(int day, int month, int year) {
 int dateDiffInDays(const char *checkIn, const char *checkOut) {
     int d1, m1, y1, d2, m2, y2;
 
-    scanf(checkIn, "%d-%d-%d", &d1, &m1, &y1);
-    scanf(checkOut, "%d-%d-%d", &d2, &m2, &y2);
+    sscanf(checkIn, "%d-%d-%d", &d1, &m1, &y1);
+    sscanf(checkOut, "%d-%d-%d", &d2, &m2, &y2);
 
     int day1 = dateToDayNumber(d1, m1, y1);
     int day2 = dateToDayNumber(d2, m2, y2);
