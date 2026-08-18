@@ -1,8 +1,63 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "hotel.h"
 int main(){
-	
+	while(1){
+		printf("\n\n================ROOM MANAGEMENT SYSTEM================\n");
+		printf("\n1.Add Rooms");
+		printf("\n2.Check availability");
+		printf("\n3.Display all rooms");
+		printf("\n4.Search Rooms");
+		printf("\n5.Sort Rooms");
+		printf("\n6.Update Room Status");
+		printf("\n7.Delete Room");
+		printf("\n8.Exit\n\n");
+		int ch=getValidChoice(1,8);
+		if(ch==8){
+			break;
+		}
+		switch(ch){
+			case 1:{
+				addRoom();
+				break;
+			}
+			case 2:{
+				int id;
+				id=getValidInt("\nEnter room id to check for availability: ");
+				if(isRoomAvailable(id)){
+					printf("\nRoom %d is Available\n",id);
+					searchRoomById(id);
+				}
+				else {
+       				 printf("\nRoom %d is Occupied or does not exist.\n", id);
+    			}
+				break;
+			}
+			case 3:{
+				displayRooms();
+				break;
+			}
+			case 4:{
+				searchRoomMenu();
+				break;
+			}
+			case 5:{
+				sortRoomsMenu();
+				break;
+			}
+			case 6:{
+				int rid=getValidInt("\nEnter room id: ");
+				int status=getValidInt("\nEnter status (0-Available / 1-Occupied)");
+				updateRoomStatus(rid,status);
+				break;
+			}
+			case 7:{
+				deleteRoom();
+				break;
+			}
+		}
+	}
 	
 	return 0;
 }
@@ -15,8 +70,33 @@ void addRoom(void) {
 
     r.roomId = getValidInt("Enter Room ID: ");
     getValidString("Enter Room Number: ", r.roomNumber, sizeof(r.roomNumber));
-    getValidString("Enter Room Type (Single/Double/Deluxe/Suite): ", r.roomType, sizeof(r.roomType));
-    getValidString("Enter Category (AC/Non-AC): ", r.category, sizeof(r.category));
+	while(1){
+		char type[STR_LEN];
+		printf("\nChoose Room Type (Single/Double/Deluxe/Suite)\n");
+		getValidString("Enter choice: ",type,sizeof(type));
+		tolowercase(type);
+		if(strcmp(type,"single")==0 || strcmp(type,"double")==0 || strcmp(type,"deluxe")==0 || strcmp(type,"suite")==0){
+			strcpy(r.roomType, type);
+			break;
+		}else{
+			printf("\nEnter a Valid choice.\n");
+		}
+		
+	}
+
+	while(1){
+		char type[STR_LEN];
+		printf("\nChoose Room Category (AC/Non-AC):\n");
+		getValidString("Enter choice: ",type,sizeof(type));
+		tolowercase(type);
+		if(strcmp(type,"ac")==0 || strcmp(type,"non-ac")==0){
+			strcpy(r.category, type);
+			break;
+		}else{
+			printf("\nEnter a Valid choice.\n");
+		}
+	}
+		
     r.floor = getValidInt("Enter Floor Number: ");
     r.pricePerNight = getValidFloat("Enter Price Per Night: ");
     r.capacity = getValidInt("Enter Capacity: ");
@@ -29,6 +109,37 @@ void addRoom(void) {
     fclose(fp);
 
     printf("Room added successfully!\n");
+}
+void deleteRoom(void) {
+    struct Room rooms[MAX_ROOMS];
+    int count = loadAllRooms(rooms, MAX_ROOMS);
+
+    if (count == 0) {
+        printf("\nNo rooms to delete.\n");
+        return;
+    }
+
+    int id = getValidInt("Enter Room ID to delete: ");
+    int found = 0;
+
+    FILE *fp = openFileSafe(ROOM_FILE, "wb");   
+    if (fp == NULL) return;
+
+    for (int i = 0; i < count; i++) {
+        if (rooms[i].roomId == id) {
+            found = 1;
+            continue;  
+        }
+        fwrite(&rooms[i], sizeof(struct Room), 1, fp);
+    }
+
+    fclose(fp);
+
+    if (found) {
+        printf("\nRoom %d deleted successfully.\n", id);
+    } else {
+        printf("\nNo room found with ID %d.\n", id);
+    }
 }
 
 int loadAllRooms(struct Room rooms[], int maxSize) {
@@ -100,14 +211,22 @@ void displayRooms(void) {
     }
 }
 
-void searchRoomById(void) {
+void searchRoomById(int n) {
+	int id;
     struct Room rooms[MAX_ROOMS];
     int count = loadAllRooms(rooms, MAX_ROOMS);
-    int id = getValidInt("Enter Room ID to search: ");
-
+    if(n==0){
+		id = getValidInt("Enter Room ID to search: ");		
+	}
+	else{
+		id=n;
+	}
     for (int i = 0; i < count; i++) {
         if (rooms[i].roomId == id) {
-            printf("\nFound: Room %d | %s | %s | %s | Floor %d | Rs.%.2f/night | Capacity %d | %s\n",
+        	printf("\n%-6s %-10s %-10s %-8s %-6s %-10s %-10s %-10s\n",
+           "ID", "Number", "Type", "Category", "Floor", "Price", "Capacity", "Status");
+    printf("--------------------------------------------------------------------------\n");
+            printf("%-6d %-10s %-10s %-8s %-6d %-10.2f %-10d %-10s\n",
                    rooms[i].roomId, rooms[i].roomNumber, rooms[i].roomType, rooms[i].category,
                    rooms[i].floor, rooms[i].pricePerNight, rooms[i].capacity,
                    rooms[i].status == STATUS_AVAILABLE ? "Available" : "Occupied");
@@ -128,9 +247,12 @@ void searchRoomByType(void) {
 
     for (int i = 0; i < count; i++) {
         if (strcmp(rooms[i].roomType, type) == 0) {
-            printf("Room %d | %s | Floor %d | Rs.%.2f/night | %s\n",
-                   rooms[i].roomId, rooms[i].roomNumber, rooms[i].floor,
-                   rooms[i].pricePerNight,
+           printf("\n%-6s %-10s %-10s %-8s %-6s %-10s %-10s %-10s\n",
+           "ID", "Number", "Type", "Category", "Floor", "Price", "Capacity", "Status");
+    printf("--------------------------------------------------------------------------\n");
+            printf("%-6d %-10s %-10s %-8s %-6d %-10.2f %-10d %-10s\n",
+                   rooms[i].roomId, rooms[i].roomNumber, rooms[i].roomType, rooms[i].category,
+                   rooms[i].floor, rooms[i].pricePerNight, rooms[i].capacity,
                    rooms[i].status == STATUS_AVAILABLE ? "Available" : "Occupied");
             found = 1;
         }
@@ -149,8 +271,13 @@ void searchRoomByStatus(void) {
 
     for (int i = 0; i < count; i++) {
         if (rooms[i].status == status) {
-            printf("Room %d | %s | %s | Floor %d\n",
-                   rooms[i].roomId, rooms[i].roomNumber, rooms[i].roomType, rooms[i].floor);
+          printf("%-6s %-10s %-10s %-8s %-6s %-10s %-10s %-10s\n",
+           "ID", "Number", "Type", "Category", "Floor", "Price", "Capacity", "Status");
+    printf("--------------------------------------------------------------------------\n");
+            printf("\n%-6d %-10s %-10s %-8s %-6d %-10.2f %-10d %-10s\n",
+                   rooms[i].roomId, rooms[i].roomNumber, rooms[i].roomType, rooms[i].category,
+                   rooms[i].floor, rooms[i].pricePerNight, rooms[i].capacity,
+                   rooms[i].status == STATUS_AVAILABLE ? "Available" : "Occupied");
             found = 1;
         }
     }
@@ -170,7 +297,7 @@ void searchRoomMenu(void) {
     choice = getValidChoice(1, 4);
 
     switch (choice) {
-        case 1: searchRoomById(); break;
+        case 1: searchRoomById(0); break;
         case 2: searchRoomByType(); break;
         case 3: searchRoomByStatus(); break;
         case 4: return;
@@ -178,7 +305,6 @@ void searchRoomMenu(void) {
 }
 
 void sortRoomsByPrice(struct Room rooms[], int n) {
-    // Bubble sort ascending by pricePerNight
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - 1 - i; j++) {
             if (rooms[j].pricePerNight > rooms[j + 1].pricePerNight) {
@@ -191,7 +317,6 @@ void sortRoomsByPrice(struct Room rooms[], int n) {
 }
 
 void sortRoomsByType(struct Room rooms[], int n) {
-    // Bubble sort alphabetically by roomType
     for (int i = 0; i < n - 1; i++) {
         for (int j = 0; j < n - 1 - i; j++) {
             if (strcmp(rooms[j].roomType, rooms[j + 1].roomType) > 0) {
@@ -275,6 +400,7 @@ void getValidString(const char *prompt, char *value, int size) {
 int getValidChoice(int min, int max) {
     int choice;
     while (1) {
+    	printf("Choose between %d and %d\n",min,max);
         choice = getValidInt("Enter your choice: ");
         if (choice >= min && choice <= max) {
             return choice;
@@ -302,4 +428,10 @@ FILE *openFileSafe(const char *filename, const char *mode) {
         printf("Error: could not open file '%s'.\n", filename);
     }
     return fp;
+}
+
+void tolowercase(char *str){
+	for (int i = 0; str[i] != '\0'; i++) {
+        str[i] = (char)tolower((unsigned char)str[i]);
+    }
 }

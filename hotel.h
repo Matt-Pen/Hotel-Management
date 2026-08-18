@@ -71,10 +71,11 @@ struct Booking {
 
 
 void addRoom(void);
+void deleteRoom(void);
 void displayRooms(void);
 
 void searchRoomMenu(void);
-void searchRoomById(void);
+void searchRoomById(int n);
 void searchRoomByType(void);
 void searchRoomByStatus(void);
 
@@ -120,6 +121,7 @@ void bookingManagementMenu(void);
 void reportsMenu(void);
 
 
+void tolowercase(char *str);
 int  getValidInt(const char *prompt);
 float getValidFloat(const char *prompt);
 void getValidString(const char *prompt, char *value, int size);
