@@ -3,7 +3,6 @@
 #include <ctype.h>
 #include "hotel.h"
 
-
 int main(void)
 {
     int choice;
@@ -13,23 +12,28 @@ int main(void)
         printf("\n\n========== HOTEL MANAGEMENT SYSTEM ==========\n");
         printf("1. Room Management\n");
         printf("2. Guest Management\n");
-        printf("3. Exit\n");
+        printf("3. Booking Management\n");
+        printf("4. Exit\n");
 
-        choice = getValidChoice(1, 3);
+        choice = getValidChoice(1, 4);
 
         switch (choice)
         {
-            case 1:
-                roomManagementMenu();
-                break;
+        case 1:
+            roomManagementMenu();
+            break;
 
-            case 2:
-                guestManagementMenu();
-                break;
+        case 2:
+            guestManagementMenu();
+            break;
 
-            case 3:
-                printf("Exiting program...\n");
-                return 0;
+        case 3:
+            bookingManagementMenu();
+            break;
+
+        case 4:
+            printf("Exiting program...\n");
+            return 0;
         }
     }
 
@@ -58,59 +62,59 @@ void roomManagementMenu(void)
 
         switch (choice)
         {
-            case 1:
-                addRoom();
-                break;
+        case 1:
+            addRoom();
+            break;
 
-            case 2:
-                roomId = getValidInt(
-                    "Enter room ID to check availability: ");
+        case 2:
+            roomId = getValidInt(
+                "Enter room ID to check availability: ");
 
-                if (isRoomAvailable(roomId))
-                {
-                    printf("Room is available.\n");
-                }
-                else
-                {
-                    printf("Room is not available or does not exist.\n");
-                }
-                break;
+            if (isRoomAvailable(roomId))
+            {
+                printf("Room is available.\n");
+            }
+            else
+            {
+                printf("Room is not available or does not exist.\n");
+            }
+            break;
 
-            case 3:
-                displayRooms();
-                break;
+        case 3:
+            displayRooms();
+            break;
 
-            case 4:
-                searchRoomMenu();
-                break;
+        case 4:
+            searchRoomMenu();
+            break;
 
-            case 5:
-                sortRoomsMenu();
-                break;
+        case 5:
+            sortRoomsMenu();
+            break;
 
-            case 6:
-                roomId = getValidInt("Enter room ID: ");
+        case 6:
+            roomId = getValidInt("Enter room ID: ");
 
-                printf("0 = Available, 1 = Occupied\n");
+            printf("0 = Available, 1 = Occupied\n");
 
-                status = getValidChoice(0, 1);
+            status = getValidChoice(0, 1);
 
-                if (updateRoomStatus(roomId, status))
-                {
-                    printf("Room status updated successfully.\n");
-                }
-                else
-                {
-                    printf("Room not found.\n");
-                }
-                break;
+            if (updateRoomStatus(roomId, status))
+            {
+                printf("Room status updated successfully.\n");
+            }
+            else
+            {
+                printf("Room not found.\n");
+            }
+            break;
 
-            case 7:
-                deleteRoom();
-                break;
+        case 7:
+            deleteRoom();
+            break;
 
-            case 8:
-                return;
+        case 8:
+            return;
         }
 
         pressAnyKeyToContinue();
@@ -133,29 +137,61 @@ void guestManagementMenu(void)
 
         switch (choice)
         {
-            case 1:
-                addGuest();
-                break;
+        case 1:
+            addGuest();
+            break;
 
-            case 2:
-                displayGuests();
-                break;
+        case 2:
+            displayGuests();
+            break;
 
-            case 3:
-                searchGuestMenu();
-                break;
+        case 3:
+            searchGuestMenu();
+            break;
 
-            case 4:
-                return;
+        case 4:
+            return;
         }
 
         pressAnyKeyToContinue();
     }
 }
 
+void bookingManagementMenu(void)
+{
+    int choice;
 
-//THESE ARE HELPER FUNCTIONS COMMON TO ALL
-//MAYBE WE CAN CREATE A SEPARATE UTILS.C
+    while (1)
+    {
+        printf("\n\n========== BOOKING MANAGEMENT ==========\n");
+        printf("1. Check-In Guest\n");
+        printf("2. Check-Out Guest\n");
+        printf("3. Booking Reports\n");
+        printf("4. Go Back\n");
+
+        choice = getValidChoice(1, 4);
+
+        switch (choice)
+        {
+        case 1:
+            checkInGuest();
+            break;
+        case 2:
+            checkOutGuest();
+            break;
+        case 3:
+            displayBookingsMenu();
+            break;
+        case 4:
+            return;
+        }
+
+        pressAnyKeyToContinue();
+    }
+}
+
+// THESE ARE HELPER FUNCTIONS COMMON TO ALL
+// MAYBE WE CAN CREATE A SEPARATE UTILS.C
 
 int getValidInt(const char *prompt)
 {
@@ -286,20 +322,27 @@ void tolowercase(char *str)
     }
 }
 
-
-int isValidDateFormat(const char *date) {
+int isValidDateFormat(const char *date)
+{
     int d, m, y;
-    if (sscanf(date, "%d-%d-%d", &d, &m, &y) != 3) return 0;
-    if (d < 1 || d > 31) return 0;
-    if (m < 1 || m > 12) return 0;
-    if (y < 2000 || y > 2100) return 0;
+    if (sscanf(date, "%d-%d-%d", &d, &m, &y) != 3)
+        return 0;
+    if (d < 1 || d > 31)
+        return 0;
+    if (m < 1 || m > 12)
+        return 0;
+    if (y < 2000 || y > 2100)
+        return 0;
     return 1;
 }
 
-void getValidDate(const char *prompt, char *buffer, int size) {
-    while (1) {
+void getValidDate(const char *prompt, char *buffer, int size)
+{
+    while (1)
+    {
         getValidString(prompt, buffer, size);
-        if (isValidDateFormat(buffer)) {
+        if (isValidDateFormat(buffer))
+        {
             return;
         }
         printf("Invalid date. Use format DD-MM-YYYY (e.g. 18-08-2026).\n");
