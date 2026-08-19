@@ -249,24 +249,24 @@ float getRoomPrice(int roomId) {
     return 0.0f;
 }
 
-int isValidDateFormat(const char *date) {
-    int d, m, y;
-    if (sscanf(date, "%d-%d-%d", &d, &m, &y) != 3) return 0;
-    if (d < 1 || d > 31) return 0;
-    if (m < 1 || m > 12) return 0;
-    if (y < 2000 || y > 2100) return 0;
-    return 1;
-}
+// int isValidDateFormat(const char *date) {
+//     int d, m, y;
+//     if (sscanf(date, "%d-%d-%d", &d, &m, &y) != 3) return 0;
+//     if (d < 1 || d > 31) return 0;
+//     if (m < 1 || m > 12) return 0;
+//     if (y < 2000 || y > 2100) return 0;
+//     return 1;
+// }
 
-void getValidDate(const char *prompt, char *buffer, int size) {
-    while (1) {
-        getValidString(prompt, buffer, size);
-        if (isValidDateFormat(buffer)) {
-            return;
-        }
-        printf("Invalid date. Use format DD-MM-YYYY (e.g. 18-08-2026).\n");
-    }
-}
+// void getValidDate(const char *prompt, char *buffer, int size) {
+//     while (1) {
+//         getValidString(prompt, buffer, size);
+//         if (isValidDateFormat(buffer)) {
+//             return;
+//         }
+//         printf("Invalid date. Use format DD-MM-YYYY (e.g. 18-08-2026).\n");
+//     }
+// }
 
 int isLeapYear(int year) {
     if (year % 4 != 0) return 0;
