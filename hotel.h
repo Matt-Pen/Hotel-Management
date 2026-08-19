@@ -105,23 +105,27 @@ int  doesGuestExist(int guestId);
 
 void checkInGuest(void);
 void checkOutGuest(void);
-
 float calculateBill(int numDays, float pricePerNight);
-
 void displayBookingsMenu(void);
 void displayActiveBookings(void);
 void displayBookingsByGuest(void);
 void displayBookingsByRoom(void);
-
 int  loadAllBookings(struct Booking bookings[], int maxSize);
 int  getNextBookingId(void);
+int   isLeapYear(int year);
+int   dateToDayNumber(int day, int month, int year);
+int   dateDiffInDays(const char *checkIn, const char *checkOut);
+float getRoomPrice(int roomId);
+void  saveBooking(struct Booking b);
+int   rewriteBookingOnCheckout(struct Booking updated);
+void  printBookingRow(struct Booking b);
 
 
 void displayMainMenu(void);
 void roomManagementMenu(void);
 void guestManagementMenu(void);
 void bookingManagementMenu(void);
-void reportsMenu(void);
+
 
 
 void tolowercase(char *str);
@@ -129,6 +133,8 @@ int  getValidInt(const char *prompt);
 float getValidFloat(const char *prompt);
 void getValidString(const char *prompt, char *value, int size);
 int  getValidChoice(int min, int max);
+int   isValidDateFormat(const char *date);
+void  getValidDate(const char *prompt, char *buffer, int size);
 void pressAnyKeyToContinue(void);
 void clearInputBuffer(void);
 

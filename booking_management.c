@@ -2,17 +2,6 @@
 #include <string.h>
 #include "hotel.h"
 
-int   isValidDateFormat(const char *date);
-void  getValidDate(const char *prompt, char *buffer, int size);
-int   isLeapYear(int year);
-int   dateToDayNumber(int day, int month, int year);
-int   dateDiffInDays(const char *checkIn, const char *checkOut);
-float getRoomPrice(int roomId);
-void  saveBooking(struct Booking b);
-int   rewriteBookingOnCheckout(struct Booking updated);
-void  printBookingRow(struct Booking b);
-
-
 int loadAllBookings(struct Booking bookings[], int maxSize) {
     FILE *fp = fopen(BOOKING_FILE, "rb");
     if (fp == NULL) {
